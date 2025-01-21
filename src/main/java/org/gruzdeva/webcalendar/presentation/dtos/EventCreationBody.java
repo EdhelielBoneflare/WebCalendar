@@ -1,11 +1,10 @@
 package org.gruzdeva.webcalendar.presentation.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.gruzdeva.webcalendar.utils.ValidDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import org.gruzdeva.webcalendar.utils.ValidDate;
 
 public class EventCreationBody{
     @NotBlank(message = "Title for the event is required.")

@@ -1,6 +1,8 @@
 package org.gruzdeva.webcalendar.exception.advicers;
 
+
 import org.gruzdeva.webcalendar.presentation.dtos.CustomErrorMessage;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 
 @ControllerAdvice
 public class EventAdvice {
@@ -32,6 +35,12 @@ public class EventAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CustomErrorMessage> handleNoBodyProvided(HttpMessageNotReadableException e){
         CustomErrorMessage response = new CustomErrorMessage("Request body is missing.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<CustomErrorMessage> handleValidationException(ValidationException e) {
+        CustomErrorMessage response = new CustomErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

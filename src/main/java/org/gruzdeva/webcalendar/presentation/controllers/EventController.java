@@ -10,19 +10,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/event")
 public class EventController {
     private final EventService eventService;
 
-    public EventController() {
-        eventService = new EventService();
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
 
     @GetMapping("/today")
     public ResponseEntity<?> getTodayEvents() {
-        return new ResponseEntity<>(new String[] {}, HttpStatus.OK);
+        List<EventDTO> eventsToday = eventService.getEventsByDate(LocalDate.now());
+        HttpStatus resStatus = HttpStatus.OK;
+        if (eventsToday.isEmpty()) {
+            resStatus = HttpStatus.NO_CONTENT;
+        }
+        return new ResponseEntity<>(eventsToday, resStatus);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllEvents() {
+        List<EventDTO> allEvents = eventService.getAllEvents();
+        HttpStatus resStatus = HttpStatus.OK;
+        if (allEvents.isEmpty()) {
+            resStatus = HttpStatus.NO_CONTENT;
+        }
+        return new ResponseEntity<>(allEvents, resStatus);
     }
 
     @PostMapping("")

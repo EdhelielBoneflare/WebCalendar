@@ -1,9 +1,10 @@
 package org.gruzdeva.webcalendar.presentation.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDate;
 
+@JsonPropertyOrder({"message", "event", "date"})
 public class EventCreatedResponse {
     public String message;
     @JsonProperty("event")
