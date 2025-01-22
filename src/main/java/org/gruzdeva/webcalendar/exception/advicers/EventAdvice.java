@@ -14,12 +14,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class EventAdvice {
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<CustomErrorMessage> handleWrongPath(NoHandlerFoundException e) {
+        CustomErrorMessage response = new CustomErrorMessage("Endpoint not found.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CustomErrorMessage> handleValidationExceptions(MethodArgumentNotValidException e) {
@@ -63,7 +70,7 @@ public class EventAdvice {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Message> handleNoElement(NoSuchElementException e){
-        Message response = new Message("Element not found.", HttpStatus.NOT_FOUND);
+        Message response = new Message(e.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

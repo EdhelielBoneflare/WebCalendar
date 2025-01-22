@@ -52,4 +52,11 @@ public class EventService {
         Event savedEvent = eventRepository.save(event);
         return new EventDTO(savedEvent);
     }
+
+    @Transactional
+    public EventDTO deleteEventById(long id) {
+        EventDTO deletedEvent = getEventById(id);
+        eventRepository.deleteById(id);
+        return deletedEvent;
+    }
 }

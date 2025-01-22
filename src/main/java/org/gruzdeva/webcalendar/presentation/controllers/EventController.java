@@ -80,8 +80,13 @@ public class EventController {
     public ResponseEntity<EventDTO> getEventById(@PathVariable("id") @Positive long id) {
         EventDTO event = eventService.getEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
+}
+
+    @DeleteMapping("/{id}")
+    @Validated
+    public ResponseEntity<EventDTO> deleteEventById(@PathVariable("id") @Positive long id) {
+        EventDTO event = eventService.deleteEventById(id);
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
-
-
 
 }
