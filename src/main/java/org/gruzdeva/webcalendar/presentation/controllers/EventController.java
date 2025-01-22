@@ -24,18 +24,6 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    /*
-    @GetMapping("")
-    public ResponseEntity<List<EventDTO>> getAllEvents() {
-        List<EventDTO> allEvents = eventService.getAllEvents();
-        HttpStatus resStatus = HttpStatus.OK;
-        if (allEvents.isEmpty()) {
-            resStatus = HttpStatus.NO_CONTENT;
-        }
-        return new ResponseEntity<>(allEvents, resStatus);
-    }
-    */
-
     @GetMapping("")
     public ResponseEntity<List<EventDTO>> getEventInTimePeriod(
             @RequestParam(name="start_time", required = false) Optional<String> startDate,
@@ -80,7 +68,7 @@ public class EventController {
     public ResponseEntity<EventDTO> getEventById(@PathVariable("id") @Positive long id) {
         EventDTO event = eventService.getEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
-}
+    }
 
     @DeleteMapping("/{id}")
     @Validated
