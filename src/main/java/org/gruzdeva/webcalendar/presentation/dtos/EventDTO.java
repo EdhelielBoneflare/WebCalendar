@@ -1,13 +1,17 @@
 package org.gruzdeva.webcalendar.presentation.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.gruzdeva.webcalendar.persistence.models.Event;
 
 import java.time.LocalDate;
 
+@JsonPropertyOrder({"id", "event", "date"})
 public class EventDTO {
     private final long id;
-    private String title;
-    private LocalDate date;
+    @JsonProperty("event")
+    private final String title;
+    private final LocalDate date;
 
     public EventDTO(Event event) {
         id = event.getId();

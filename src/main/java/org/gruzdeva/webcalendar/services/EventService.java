@@ -4,10 +4,12 @@ import org.gruzdeva.webcalendar.persistence.models.Event;
 import org.gruzdeva.webcalendar.persistence.repositories.EventRepository;
 import org.gruzdeva.webcalendar.presentation.dtos.EventDTO;
 
-import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional;;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -28,6 +30,12 @@ public class EventService {
         return eventRepository.findByDate(date).stream()
                 .map(EventDTO::new)
                 .toList();
+    }
+
+    public EventDTO getEventById(Long id) throws NoSuchElementException {
+        return eventRepository.findById(id)
+                .map(EventDTO::new)
+                .orElseThrow(() -> new NoSuchElementException("The event doesn't exist!"));
     }
 
     @Transactional
