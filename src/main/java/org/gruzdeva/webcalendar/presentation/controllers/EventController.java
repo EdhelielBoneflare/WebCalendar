@@ -1,6 +1,5 @@
 package org.gruzdeva.webcalendar.presentation.controllers;
 
-import jakarta.validation.constraints.Positive;
 import org.gruzdeva.webcalendar.presentation.dtos.EventCreatedResponse;
 import org.gruzdeva.webcalendar.presentation.dtos.EventCreationBody;
 import org.gruzdeva.webcalendar.presentation.dtos.EventDTO;
@@ -11,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/event")
@@ -23,6 +24,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    /*
     @GetMapping("")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
         List<EventDTO> allEvents = eventService.getAllEvents();
@@ -32,6 +34,27 @@ public class EventController {
         }
         return new ResponseEntity<>(allEvents, resStatus);
     }
+    */
+
+    @GetMapping("")
+    public ResponseEntity<List<EventDTO>> getEventInTimePeriod(
+            @RequestParam(name="start_time", required = false) Optional<String> startDate,
+            @RequestParam(name="end_time", required = false) Optional<String> endDate
+    ) {
+        List<EventDTO> events;
+        HttpStatus resStatus = HttpStatus.OK;
+        if (startDate.isPresent() && endDate.isPresent()) {
+            events = eventService.getEventsInTimePeriod(LocalDate.parse(startDate.orElse("")), LocalDate.parse(endDate.orElse("")));
+        } else {
+            events = eventService.getAllEvents();
+        }
+
+        if (events.isEmpty()) {
+            resStatus = HttpStatus.NO_CONTENT;
+        }
+        return new ResponseEntity<>(events, resStatus);
+    }
+
 
     @PostMapping("")
     public ResponseEntity<EventCreatedResponse> createEvent(@Valid @RequestBody EventCreationBody eventBody) {
@@ -58,5 +81,7 @@ public class EventController {
         EventDTO event = eventService.getEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
+
+
 
 }

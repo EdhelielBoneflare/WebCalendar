@@ -4,12 +4,11 @@ import org.gruzdeva.webcalendar.persistence.models.Event;
 import org.gruzdeva.webcalendar.persistence.repositories.EventRepository;
 import org.gruzdeva.webcalendar.presentation.dtos.EventDTO;
 
-import jakarta.transaction.Transactional;;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class EventService {
@@ -28,6 +27,15 @@ public class EventService {
 
     public List<EventDTO> getEventsByDate(LocalDate date) {
         return eventRepository.findByDate(date).stream()
+                .map(EventDTO::new)
+                .toList();
+    }
+
+    public List<EventDTO> getEventsInTimePeriod(LocalDate startDate, LocalDate endDate) {
+        return eventRepository.findEventsByDateBetween(
+                startDate.minusDays(1),
+                endDate.plusDays(1)
+                ).stream()
                 .map(EventDTO::new)
                 .toList();
     }

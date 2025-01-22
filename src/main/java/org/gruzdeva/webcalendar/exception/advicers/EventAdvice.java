@@ -2,8 +2,8 @@ package org.gruzdeva.webcalendar.exception.advicers;
 
 
 import org.gruzdeva.webcalendar.presentation.dtos.CustomErrorMessage;
-
 import org.gruzdeva.webcalendar.presentation.dtos.Message;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 
+import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
@@ -50,6 +51,12 @@ public class EventAdvice {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<CustomErrorMessage> handleValidationException(ValidationException e) {
+        CustomErrorMessage response = new CustomErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(DateTimeException.class)
+    public ResponseEntity<CustomErrorMessage> handleDateTimeException(DateTimeException e) {
         CustomErrorMessage response = new CustomErrorMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(response, response.getStatus());
     }
