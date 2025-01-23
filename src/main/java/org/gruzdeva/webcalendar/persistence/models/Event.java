@@ -35,8 +35,16 @@ public class Event {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Long getId() {

@@ -1,11 +1,13 @@
 package org.gruzdeva.webcalendar.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.gruzdeva.webcalendar.persistence.models.Event;
 import org.gruzdeva.webcalendar.persistence.repositories.EventRepository;
 import org.gruzdeva.webcalendar.presentation.dtos.EventDTO;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,7 +45,7 @@ public class EventService {
     public EventDTO getEventById(Long id) throws NoSuchElementException {
         return eventRepository.findById(id)
                 .map(EventDTO::new)
-                .orElseThrow(() -> new NoSuchElementException("The event doesn't exist!"));
+                .orElseThrow(() -> new EntityNotFoundException("The event doesn't exist!"));
     }
 
     @Transactional
@@ -51,6 +53,20 @@ public class EventService {
         Event event = new Event(title, date);
         Event savedEvent = eventRepository.save(event);
         return new EventDTO(savedEvent);
+    }
+
+    @Transactional
+    public EventDTO updateEvent(long id, String title, LocalDate date) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The event doesn't exist!"));
+        if (!(title == null || title.isBlank())) {
+            event.setTitle(title);
+        }
+        if (date != null) {
+            event.setDate(date);
+        }
+        eventRepository.save(event);
+        return new EventDTO(event);
     }
 
     @Transactional

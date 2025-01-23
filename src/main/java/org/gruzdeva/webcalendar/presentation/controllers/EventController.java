@@ -1,7 +1,7 @@
 package org.gruzdeva.webcalendar.presentation.controllers;
 
-import org.gruzdeva.webcalendar.presentation.dtos.EventCreatedResponse;
-import org.gruzdeva.webcalendar.presentation.dtos.EventCreationBody;
+import org.gruzdeva.webcalendar.presentation.dtos.EventSavedResponse;
+import org.gruzdeva.webcalendar.presentation.dtos.EventSaveBody;
 import org.gruzdeva.webcalendar.presentation.dtos.EventDTO;
 import org.gruzdeva.webcalendar.services.EventService;
 
@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -45,10 +46,16 @@ public class EventController {
 
 
     @PostMapping("")
-    public ResponseEntity<EventCreatedResponse> createEvent(@Valid @RequestBody EventCreationBody eventBody) {
+    public ResponseEntity<EventSavedResponse> createEvent(@Valid @RequestBody EventSaveBody eventBody) {
+        if (eventBody.getTitle() == null || eventBody.getTitle().trim().isEmpty()) {
+            throw new ValidationException("Title for the event is required.");
+        }
+        if (eventBody.getDate() == null || eventBody.getDate().trim().isEmpty()) {
+            throw new ValidationException("Date of the event is required.");
+        }
         LocalDate date = LocalDate.parse(eventBody.getDate());
         EventDTO event = eventService.createEvent(eventBody.getTitle(), date);
-        EventCreatedResponse response = new EventCreatedResponse("The event has been added!", event.getTitle(),
+        EventSavedResponse response = new EventSavedResponse("The event has been added!", event.getTitle(),
                 event.getDate());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -70,9 +77,22 @@ public class EventController {
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    @Validated
+    public ResponseEntity<EventSavedResponse> updateEvent(
+            @PathVariable("id") @Positive long id,
+            @Valid @RequestBody EventSaveBody eventBody)
+    {
+        LocalDate date = !(eventBody.getDate() == null || eventBody.getDate().isBlank()) ? LocalDate.parse(eventBody.getDate()) : null;
+        EventDTO event = eventService.updateEvent(id, eventBody.getTitle(), date);
+        EventSavedResponse response = new EventSavedResponse("The event has been updated!", event.getTitle(),
+                event.getDate());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     @Validated
-    public ResponseEntity<EventDTO> deleteEventById(@PathVariable("id") @Positive long id) {
+    public ResponseEntity<EventDTO> deleteEvent(@PathVariable("id") @Positive long id) {
         EventDTO event = eventService.deleteEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
