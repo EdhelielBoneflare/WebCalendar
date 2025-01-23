@@ -1,7 +1,7 @@
 # Web Calendar
 
 ## Assignment
-create a web calendar to store and manage all upcoming events. </br>
+Create a web calendar to store and manage all upcoming events. </br>
 Use the Spring Boot framework and create a REST API.</br>
 Work with a database using Spring Data JPA and create resources using Spring MVC.
 
@@ -22,7 +22,7 @@ Work with a database using Spring Data JPA and create resources using Spring MVC
 
 ### Event Endpoints
 - **Create Event**
-  - **URL**: `/events`
+  - **URL**: `/event`
   - **Method**: `POST`
   - **Description**: Create a new event.
   - **Request Body**:
@@ -38,7 +38,7 @@ Work with a database using Spring Data JPA and create resources using Spring MVC
     - Missing Fields: If required fields (title, date) are missing, the request will fail with a 400 Bad Request.
 
 - **Get Events in time period**
-  - **URL**: `/events?start_time={start_date}end_time={end_date}`
+  - **URL**: `/event?start_time={start_date}&end_time={end_date}`
   - **Method**: `GET`
   - **Description**: Retrieve all events in between start and end date (inclusive). If no events are found retrieve all existing events.
   - **Response**: `200 OK`
@@ -56,7 +56,7 @@ Work with a database using Spring Data JPA and create resources using Spring MVC
     - No Events Found: If no events exist, the response will be 204 No Content.
 
 - **Get Event by ID**
-  - **URL**: `/events/{id}`
+  - **URL**: `/event/{id}`
   - **Method**: `GET`
   - **Description**: Retrieve an event by its ID.
   - **Response**: `200 OK`
@@ -70,9 +70,25 @@ Work with a database using Spring Data JPA and create resources using Spring MVC
   - **Edge Cases**:
     - Invalid ID: If the ID is not a positive number, the request will fail with a 400 Bad Request.
     - Event Not Found: If no event is found with the given ID, the response will be 404 Not Found.
+   
+- **Update Event**
+  - **URL**: `/event/{id}`
+  - **Method**: `PUT`
+  - **Description**: Update an event by its ID.
+  - **Request Body**:
+    ```json
+    {
+      "event": "Event Title", (optional)
+      "date": "2023-12-31" (optional)
+    }
+    ```
+  - **Response**: `201 Created`
+  - **Edge Cases**:
+    - Invalid Date Format: If the date is not in the correct format, the request will fail with a 400 Bad Request.
+    - Missing Fields: If required fields (title, date) are missing, event's corresponding field will not be changed.
 
 - **Delete Event by ID**
-  - **URL**: `/events/{id}`
+  - **URL**: `/event/{id}`
   - **Method**: `DELETE`
   - **Description**: Delete an event by its ID.
   - **Response**: `200 OK`
