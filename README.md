@@ -92,6 +92,5 @@ Work with a database using Spring Data JPA and create resources using Spring MVC
 Some of the possible features that would be great to implement in a project of this type
 1. User management - allowing different users to have different events;
 2. Collaborative event - allow multiple users to refer to the same event;
-3. Update events - update information about event by using its id;
-4. Add additional information for events: description, place, time, etc.
+3. Add additional information for events: description, place, time, etc.
    
